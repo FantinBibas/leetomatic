@@ -1,2 +1,2 @@
-# leetomatic
-Generate permutations of a word based on a characters dictionnary
+# Leetomatic
+Generate all the permutations of a word based on a character possible transformations
