@@ -17,20 +17,29 @@ characters_transformations = {
 }
 
 
-def leetomatic(dictionnary, word, auto_casing=True, base_letter=True):
-    if len(word) == 0:
-        return [word]
-    character = word[0]
-    transformations = dictionnary[character.lower()] if character.lower() in dictionnary.keys() else []
+def get_transformations(dictionary, character, auto_casing, base_letter):
+    if character.lower() in dictionary.keys():
+        for transformation in dictionary[character.lower()]:
+            yield transformation
     if base_letter:
         if auto_casing:
-            transformations.append(character.lower())
-            transformations.append(character.upper())
+            yield character.lower()
+            yield character.upper()
         else:
-            transformations.append(character)
-    if len(word) == 1:
-        return transformations
-    return [prefix + suffix for prefix, suffix in itertools.product(transformations, leetomatic(dictionnary, word[1:]))]
+            yield character
+
+
+def leetomatic(dictionary, word, auto_casing=True, base_letter=True):
+    if len(word) == 0:
+        yield word
+    else:
+        character = word[0]
+        transformations = get_transformations(dictionary, character, auto_casing, base_letter)
+        if len(word) == 1:
+            yield from transformations
+        else:
+            for prefix, suffix in itertools.product(transformations, leetomatic(dictionary, word[1:])):
+                yield prefix + suffix
 
 
 def usage(name):
